@@ -1,0 +1,6 @@
+{
+    "name" : "Presentase Gaji",
+    "version" : "0.0.0",
+    "private" : true,
+    "main" : "./PresentaseGaji.js"
+}

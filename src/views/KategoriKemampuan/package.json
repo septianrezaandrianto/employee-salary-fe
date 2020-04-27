@@ -1,0 +1,6 @@
+{
+    "name" : "KategoriKemampuan",
+    "version" : "0.0.0",
+    "private" : true,
+    "main" : "./KategoriKemampuan.js"
+}

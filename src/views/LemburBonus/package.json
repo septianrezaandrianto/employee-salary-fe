@@ -1,0 +1,7 @@
+{
+    "name" : "Lembur Bonus",
+    "version" : "0.0.0",
+    "private" : true,
+    "main" : "./LemburBonus.js"
+
+}
