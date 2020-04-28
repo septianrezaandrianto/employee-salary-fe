@@ -21,16 +21,59 @@ import {
 	CardHeader,
 	Col,
 	Row,
-	Table
+	Table,
+  CardFooter
 } from 'reactstrap';
 
   class PresentaseGaji extends Component {
     constructor() {
         super();
         this.state = {
-            presentaseGaji : []
+            presentaseGaji : [],
+            currentPage :1,
+            presentasiGajiPerPage : 5,
         }
     }
+
+     /* Start paginasi */
+    changePage = (e) => {
+      this.setState ({
+        [e.target.name] :parseInt(e.target.value)
+      });
+    };
+
+    firstPage =() => {
+      if(this.state.currentPage > 1) {
+        this.setState ({
+          currentPage : 1
+        });
+      }
+    };
+
+    prevPage = () => {
+      if (this.state.currentPage > 1) {
+        this.setState ({
+          currentPage : this.state.currentPage -1
+        });
+      }
+    };
+
+    nextPage = () => {
+      if (this.state.currentPage < Math.ceil(this.state.presentaseGaji.length / this.state.presentasiGajiPerPage)) {
+        this.setState ({
+          currentPage : this.state.currentPage  + 1
+        });
+      }
+    };
+
+    lastPage =() => {
+      if (this.state.currentPage < Math.ceil(this.state.presentaseGaji.length / this.state.presentasiGajiPerPage)) {
+        this.setState ({
+          currentPage : Math.ceil(this.state.presentaseGaji.length / this.state.presentasiGajiPerPage)
+        });
+      }
+    }
+    /* end paginasi */
 
     onDelete(id) {
     alert('Data berhasil didelete')
@@ -45,15 +88,10 @@ import {
     }
 
     getPresentaseGaji() {
-      const {pgId} = this.state
-      this.setState ({
-        presentaseGaji : [],
-        isLoading : true
-      })
 
-        axios.get('http://localhost:8085/api/presentasegaji/all')
+      axios.get('http://localhost:8085/api/presentasegaji/all')
         .then (res =>{
-            this.setState ({ presentaseGaji : res.data.Data, isLoading : false})
+            this.setState ({ presentaseGaji : res.data.Data})
             console.log(res.data.Data)
         })
         .catch((error) => {
@@ -66,13 +104,13 @@ import {
     }
 
     render () {
-        const {presentaseGaji} = this.state;
+        const {presentaseGaji , currentPage, presentasiGajiPerPage} = this.state;
 
-        if (this.state.isLoading) {
-          return (
-            <p>Loading...</p>
-          )
-        }
+        const lastIndex = currentPage * presentasiGajiPerPage;
+        const firstIndex = lastIndex - presentasiGajiPerPage;
+        const currentPresentasiGaji = presentaseGaji.slice(firstIndex, lastIndex);
+        const totalPages = Math.ceil(presentaseGaji.length / presentasiGajiPerPage);
+
         return (
 
             <>
@@ -80,7 +118,7 @@ import {
                <Col>
                 <Card>
                   <CardHeader>
-                    <i className="fa fa-align-justify"></i>List Presentase Gaji
+                    <i className="fa fa-money"></i>List Presentase Gaji
                       </CardHeader>
                       <CardBody>
     
@@ -94,42 +132,53 @@ import {
                             <th>Masa Kerja</th>
                             <th className ="aksi">Aksi</th>
                           </tr>
-                          </thead>
+                          </thead>                          
     
-                          {presentaseGaji.map((pg) => ( 
-    
-                          <tbody key= {pg.idPresentaseGaji}>          
+                          <tbody>  
+                            {presentaseGaji.length === 0 ?
                             <tr>
+                              <td colSpan="12">data masih kosong</td>
+                            </tr> : 
+
+                            currentPresentasiGaji.map((pg) => (        
+                            <tr key= {pg.idPresentaseGaji}>
                                 <td>{pg.idPresentaseGaji}</td>
                                 <td>{pg.posisiDto.namaPosisi}</td>
                                 <td>{pg.idTingkatan}</td>
                                 <td>{pg.besaranGaji}</td>
                                 <td>{pg.masaKerja}</td>                     
                                 <td>
-                                <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"> Ubah</i></Button>
+                                <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>
                                     
-                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, pg.idPresentaseGaji)}><i className="fa fa-eraser"></i> Hapus</Button>
+                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, pg.idPresentaseGaji)}><i className="fa fa-trash"></i></Button>
                                  </td>
                             </tr>
-    
+                            ))}
                           </tbody>
-                           ))}
-                        </Table>
+                           
+                        </Table>                       
+                      </CardBody>
 
-                        <nav>
+                      <CardFooter>
+                       <div style={{"float" : "left"}}>
+                          Halaman {currentPage} dari {totalPages}
+                      </div>
+
+                      <nav>
                           <Pagination className= "paginasi">
-                            <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
+                          <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.firstPage}>First</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.prevPage}>Prev</PaginationLink></PaginationItem>
+
                             <PaginationItem active>
-                              <PaginationLink tag="button">1</PaginationLink>
+                              <PaginationLink tag="button" name="currentPage" value={currentPage} onChange = {this.changePage}>{currentPage}</PaginationLink>
                             </PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
+
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.nextPage}>Next</PaginationLink></PaginationItem>
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.lastPage}>Last</PaginationLink></PaginationItem>
                           </Pagination>
                         </nav>
 
-                      </CardBody>
+                      </CardFooter>
                     </Card>
                   </Col>
             </Row>

@@ -21,7 +21,8 @@ import {
 	CardHeader,
 	Col,
 	Row,
-	Table
+  Table,
+  CardFooter
 } from 'reactstrap';
 
   class TunjanganPegawai extends Component {
@@ -29,6 +30,8 @@ import {
           super(props);
           this.state = {
               tunjanganPegawai : [],
+              currentPage : 1,
+              tunjanganPegawaiPerPage : 5
           }
       }    
  
@@ -54,20 +57,66 @@ import {
               console.log(error.res)
             })
         }
-
         componentDidMount() {
-            this.getTunjanganPegawai();
-        }
+          this.getTunjanganPegawai();
+      }
+
+  /* Start Paginasi */
+        currentPage = (e) => {
+          this.setState ({
+            [e.target.name] : parseInt (e.target.value)
+          });
+        };
+
+        firstPage=()=> {
+          if (this.state.currentPage > 1) {
+            this.setState ({
+              currentPage : 1 
+            });
+          }
+        };
+
+        prevPage=() => {
+          if (this.state.currentPage > 1) {
+            this.setState ({
+              currentPage : this.state.currentPage -1
+            });
+          }
+        };
+
+        nextPage = () => {
+          if (this.state.currentPage < Math.ceil(this.state.tunjanganPegawai.length / this.state.tunjanganPegawaiPerPage)) {
+            this.setState ({
+              currentPage : this.state.currentPage + 1
+            });
+          }
+        };
+
+        lastPage = () => {
+          if (this.state.currentPage < Math.ceil(this.state.tunjanganPegawai.length / this.state.tunjanganPegawaiPerPage)) {
+            this.setState ({
+              currentPage : Math.ceil(this.state.tunjanganPegawai.length / this.state.tunjanganPegawaiPerPage)
+            });
+          }
+        };
+  /* End Paginasi */
+       
 
       render() {
-            const {tunjanganPegawai} =  this.state;
+            const {tunjanganPegawai, currentPage, tunjanganPegawaiPerPage} =  this.state;
+
+            const lastIndex = currentPage * tunjanganPegawaiPerPage;
+            const firstIndex = lastIndex - tunjanganPegawaiPerPage;
+            const currentTunjanganPegawai = tunjanganPegawai.slice(firstIndex, lastIndex);
+            const totalPages = Math.ceil(tunjanganPegawai.length / tunjanganPegawaiPerPage);
+
           return (
             <>
             <Row>
                <Col>
                 <Card>
                   <CardHeader>
-                    <i className="fa fa-align-justify"></i>List Tunjangan Pegawai
+                    <i className="fa fa-area-chart"></i>List Tunjangan Pegawai
                       </CardHeader>
                       <CardBody>
     
@@ -81,39 +130,51 @@ import {
                             <th className ="aksi">Aksi</th>
                           </tr>
                           </thead>
-    
-                          {tunjanganPegawai.map((tp) => ( 
-    
-                          <tbody key= {tp.idTunjanganPegawai}>          
-                            <tr>
+   
+                          <tbody>  
+
+                          {tunjanganPegawai.length === 0 ?
+                          <tr>
+                              <td colSpan = "12"><h4>Belum ada data</h4></td>
+                          </tr> :
+                          currentTunjanganPegawai.map((tp) => (         
+                            <tr  key= {tp.idTunjanganPegawai}>
                                 <td>{tp.idTunjanganPegawai}</td>
                                 <td>{tp.posisi.idPosisi}</td>
                                 <td>{tp.tingkatan.idTingkatan}</td>
                                 <td>{tp.besaranTujnaganPegawai}</td>                     
                                 <td>
-                                <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"> Ubah</i></Button>                           
-                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, tp.idTunjanganPegawai)}><i className="fa fa-eraser"></i> Hapus</Button>
+                                <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>                           
+                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, tp.idTunjanganPegawai)}><i className="fa fa-trash"></i></Button>
                                  </td>
                             </tr>
-    
-                          </tbody>
                            ))}
-                        </Table>
-                            
-                        <nav>
+                          </tbody>
+                          
+                        </Table>                
+                      </CardBody>
+
+                      <CardFooter>
+                       <div style={{"float" : "left"}}>
+                          Halaman {currentPage} dari {totalPages}
+                      </div>
+
+                      <nav>
                           <Pagination className= "paginasi">
-                            <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
+                          <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.firstPage}>First</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.prevPage}>Prev</PaginationLink></PaginationItem>
+
                             <PaginationItem active>
-                              <PaginationLink tag="button">1</PaginationLink>
+                              <PaginationLink tag="button" name="currentPage" value={currentPage} onChange = {this.changePage}>{currentPage}</PaginationLink>
                             </PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
+
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.nextPage}>Next</PaginationLink></PaginationItem>
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.lastPage}>Last</PaginationLink></PaginationItem>
                           </Pagination>
                         </nav>
-                      
-                      </CardBody>
+
+                      </CardFooter>
+
                     </Card>
                   </Col>
             </Row>

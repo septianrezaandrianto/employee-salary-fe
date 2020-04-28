@@ -18,7 +18,8 @@ import {
 	Button,
 	Card,
 	CardBody,
-	CardHeader,
+  CardHeader,
+  CardFooter,
 	Col,
 	Row,
 	Table
@@ -28,7 +29,9 @@ class Parameter extends Component {
     constructor() {
         super();
         this.state = {
-            parameter : []
+            parameter : [],
+            currentPage : 1,
+            parameterPerPage : 5,
         }
     }
 
@@ -60,15 +63,59 @@ class Parameter extends Component {
     }
 
 
+    /* Paginasi */
+    currentPage = (e) => {
+      this.setState ({
+        [e.target.name] : parseInt(e.target.value)
+      });
+    };
+
+    firstPage = () => {
+      if (this.state.currentPage > 1) {
+        this.setState ({
+          currentPage : 1
+        });
+      }
+    };
+
+    prevPage = () => {
+      if (this.state.currentPage > 1) {
+        this.setState ({
+          currentPage : this.state.currentPage - 1
+        });
+      }
+    };
+
+    nextPage = () => {
+      if(this.state.currentPage < Math.ceil(this.state.parameter.length / this.state.parameterPerPage)) {
+        this.setState ({
+          currentPage : this.state.currentPage + 1
+        });
+      }
+    };
+
+    lastPage = () => {
+      if(this.state.currentPage < Math.ceil(this.state.parameter.length / this.state.parameterPerPage)) {
+        this.setState ({
+          currentPage : Math.ceil(this.state.parameter.length / this.state.parameterPerPage)
+        });
+      }
+    };
+
     render() {
-        const {parameter} = this.state;
+        const {parameter, currentPage, parameterPerPage} = this.state;
+
+        const lastIndex = currentPage * parameterPerPage;
+        const firstIndex = lastIndex - parameterPerPage;
+        const currentParameter = parameter.slice(firstIndex, lastIndex);
+        const totalPages = Math.ceil(parameter.length/ parameterPerPage);
         return (
             <>
             <Row>
                <Col>
                 <Card>
                   <CardHeader>
-                    <i className="fa fa-align-justify"></i>List Parameter
+                    <i className="fa fa-tachometer"></i>List Parameter
                       </CardHeader>
                       <CardBody>
     
@@ -91,11 +138,15 @@ class Parameter extends Component {
                             <th className ="aksi">Aksi</th>
                           </tr>
                           </thead>
-    
-                          {parameter.map((param) => ( 
-    
-                          <tbody key= {param.idParam}>          
+  
+                          <tbody> 
+
+                            {parameter.length === 0 ?
                             <tr>
+                                <td colSpan = "12"><h4>Belum ada data</h4></td>
+                            </tr> :
+                            currentParameter.map((param) => (         
+                            <tr key= {param.idParam}>
                                 <td>{param.idParam}</td>
                                 <td>{param.tbParameter}</td>
                                 <td>{param.lembur}</td>
@@ -110,30 +161,38 @@ class Parameter extends Component {
                                 <td>{param.pbpjs}</td>
                                 <td>Rp. {param.ttransport}</td>                   
                                 <td>
-                                     <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"> Ubah</i></Button>
+                                     <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>
                                      
-                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, param.idParam)}><i className="fa fa-eraser"></i> Hapus</Button>
+                                <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, param.idParam)}><i className="fa fa-trash"></i></Button>
                                  </td>
                             </tr>
-    
+                          ))}
                           </tbody>
-                           ))}
+                           
                         </Table>
+                      </CardBody>
 
-                        <nav>
+                      <CardFooter>
+                       <div style={{"float" : "left"}}>
+                          Halaman {currentPage} dari {totalPages}
+                      </div>
+
+                      <nav>
                           <Pagination className= "paginasi">
-                            <PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
+                          <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.firstPage}>First</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.prevPage}>Prev</PaginationLink></PaginationItem>
+
                             <PaginationItem active>
-                              <PaginationLink tag="button">1</PaginationLink>
+                              <PaginationLink tag="button" name="currentPage" value={currentPage} onChange = {this.changePage}>{currentPage}</PaginationLink>
                             </PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-                            <PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
+
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.nextPage}>Next</PaginationLink></PaginationItem>
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.lastPage}>Last</PaginationLink></PaginationItem>
                           </Pagination>
                         </nav>
-                      
-                      </CardBody>
+
+                      </CardFooter>
+
                     </Card>
                   </Col>
             </Row>

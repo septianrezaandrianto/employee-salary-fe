@@ -18,6 +18,7 @@ import {
 	Card,
 	CardBody,
 	CardHeader,
+	CardFooter,
 	Col,
 	Row,
 	Table
@@ -34,9 +35,10 @@ class Penempatan extends Component {
 					kotaPenempatan : '',
 					umkPenempatan : ''
 				},
-
 				newPenempatanModal : false,
-				editPenempatanModal : false
+				editPenempatanModal : false,
+				currentPage : 1,
+				penempatanPerPage : 5
 			}
 		this.onChange = this.onChange.bind(this);
 		this.onSubmit = this.onSubmit.bind(this);
@@ -73,6 +75,45 @@ class Penempatan extends Component {
 		})
 	}
 
+	/* Start paginasi */
+	currentPage=(e) => {
+		this.setState ({
+			[e.target.name] : parseInt(e.target.value)
+		});
+	};
+
+	firstPage= () => {
+		if (this.state.currentPage > 1) {
+			this.setState({
+				currentPage : 1
+			});
+		}
+	};
+
+	prevPage=()=> {
+		if (this.state.currentPage > 1) {
+			this.setState ({
+				currentPage : this.state.currentPage -1
+			});
+		}
+	};
+
+	nextPage =() => {
+		if (this.state.currentPage < Math.ceil(this.state.penempatan.length / this.state.penempatanPerPage)) {
+			this.setState ({
+				currentPage : this.state.currentPage +1
+			});
+		}
+	};
+
+	lastPage =() => {
+		if (this.state.currentPage < Math.ceil(this.state.penempatan.length / this.state.penempatanPerPage)) {
+			this.setState ({
+				currentPage : Math.ceil(this.state.penempatan.length / this.state.penempatanPerPage)
+			});
+		}
+	};
+	/* End paginasi */
 	
 	updatePenempatan() {
 		alert('Data berhasil diubah')
@@ -150,7 +191,12 @@ class Penempatan extends Component {
 	}
 
 	render() {
-		const {penempatan}=this.state;
+		const {penempatan, currentPage, penempatanPerPage}=this.state;
+
+		const lastIndex = currentPage * penempatanPerPage;
+		const firstIndex = lastIndex - penempatanPerPage;
+		const currentPenempatan = penempatan.slice(firstIndex, lastIndex);
+		const totalPages = Math.ceil(penempatan.length/penempatanPerPage);
 		return (
 		<>
 
@@ -159,7 +205,7 @@ class Penempatan extends Component {
            <Col>
             <Card>
               <CardHeader>
-                <i className="fa fa-align-justify"></i>List Penempatan
+                <i className="fa fa-map-marker"></i>List Penempatan
 	              </CardHeader>
 	              <CardBody>
 
@@ -268,39 +314,51 @@ class Penempatan extends Component {
 	                    <th className ="aksi">Aksi</th>
 	                  </tr>
 	                  </thead>
+	                
+	                  <tbody> 
 
-	                  {penempatan.map((pen) => ( 
-
-	                  <tbody key= {pen.idPenempatan}>          
-	                    <tr>
+					{penempatan.length === 0 ? 
+					<tr>
+						<td colSpan = "12"><h4>Belum ada data</h4></td>
+					</tr> :
+					currentPenempatan.map((pen) => (         
+	                    <tr key= {pen.idPenempatan}>
 						
 	                      <td>{pen.idPenempatan}</td>
 	                      <td>{pen.kotaPenempatan}</td>
 		       			  <td>Rp. {pen.umkPenempatan}</td>				
 		       			  <td>
-		       			  	<Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, pen.idPenempatan, pen.kotaPenempatan, pen.umkPenempatan)} className="mr-2"><i className="fa fa-pencil" name="edit"> Ubah</i></Button>
-                			<Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, pen.idPenempatan)}><i className="fa fa-eraser"></i> Hapus</Button>
+		       			  	<Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, pen.idPenempatan, pen.kotaPenempatan, pen.umkPenempatan)} className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>
+                			<Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, pen.idPenempatan)}><i className="fa fa-trash"></i></Button>
 		       			  </td>
 	                    </tr>
-
+						))}
 	                  </tbody>
-	                   ))}
+	                   
 	                </Table>
-
-					<nav>
-						<Pagination className= "paginasi">
-							<PaginationItem><PaginationLink previous tag="button">Prev</PaginationLink></PaginationItem>
-							<PaginationItem active>
-								<PaginationLink tag="button">1</PaginationLink>
-							</PaginationItem>
-							<PaginationItem><PaginationLink tag="button">2</PaginationLink></PaginationItem>
-							<PaginationItem><PaginationLink tag="button">3</PaginationLink></PaginationItem>
-							<PaginationItem><PaginationLink tag="button">4</PaginationLink></PaginationItem>
-							<PaginationItem><PaginationLink next tag="button">Next</PaginationLink></PaginationItem>
-						</Pagination>
-					</nav>
-	              
 	              </CardBody>
+
+				  <CardFooter>
+                       <div style={{"float" : "left"}}>
+                          Halaman {currentPage} dari {totalPages}
+                      </div>
+
+                      <nav>
+                          <Pagination className= "paginasi">
+                          <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.firstPage}>First</PaginationLink></PaginationItem>
+                            <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.prevPage}>Prev</PaginationLink></PaginationItem>
+
+                            <PaginationItem active>
+                              <PaginationLink tag="button" name="currentPage" value={currentPage} onChange = {this.changePage}>{currentPage}</PaginationLink>
+                            </PaginationItem>
+
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.nextPage}>Next</PaginationLink></PaginationItem>
+                            <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.lastPage}>Last</PaginationLink></PaginationItem>
+                          </Pagination>
+                        </nav>
+
+                      </CardFooter>
+				  
 	            </Card>
 	          </Col>
 
