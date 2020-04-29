@@ -210,7 +210,7 @@ class Penempatan extends Component {
 	              <CardBody>
 
 		  		{/* Modal (pop up)  untuk add penempatan*/}
-				  <Button color="danger" type="reset" size="sm"  onClick={this.toggleNewPenempatan}>Tambah Penempatan</Button>
+				  <Button outline color="success" size ="md" type="reset"  onClick={this.toggleNewPenempatan} style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
 					<Modal isOpen={this.state.newPenempatanModal} toggle={this.toggleNewPenempatan}>
 						<ModalHeader toggle={this.toggleNewPenempatan}>Modal title</ModalHeader>
 						<ModalBody>

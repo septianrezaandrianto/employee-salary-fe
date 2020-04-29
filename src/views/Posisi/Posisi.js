@@ -203,7 +203,7 @@ class Posisi extends Component {
 	              <CardBody>
 	             
 				 {/* Modal (pop up) untuk add posisi */}
-				  <Button onClick={this.toggleNewPosisiModal} type="reset" size="sm" color="danger">Tambah Posisi</Button>
+				  <Button onClick={this.toggleNewPosisiModal} type="reset" size="md" outline color="success" style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
 					<Modal isOpen={this.state.newPosisiModal} toggle={this.toggleNewPosisiModal}>
 						<ModalHeader toggle={this.toggleNewPosisiModal}>Tambah Posisi</ModalHeader>
 						<ModalBody>

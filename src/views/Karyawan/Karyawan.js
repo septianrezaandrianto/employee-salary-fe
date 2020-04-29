@@ -128,7 +128,7 @@ class Karyawan extends Component {
 					<i className="fa fa-users"></i>List Karyawan
 					</CardHeader>
 					<CardBody>
-					<Button type="reset" size="sm" color="danger"><i className="fa fa-plus"></i> Tambah (Belum Berfungsi)</Button>
+					<Button type="reset" size="md" outline color="success" style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
 						<Table hover bordered striped responsive size="sm">
 						<thead>
 						<tr>

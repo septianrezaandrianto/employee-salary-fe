@@ -193,7 +193,7 @@ import {
 
                         
                        {/* Modal (pop up) untuk add kemampuan */}
-                      <Button color="danger" onClick={this.toggleNewKemampuanModal}>Tambah Kemampuan</Button>
+                      <Button outline color="success" size="md" onClick={this.toggleNewKemampuanModal} style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
                       <Modal isOpen={this.state.newKemampuanModal} toggle={this.toggleNewKemampuanModal}>
                         <ModalHeader toggle={this.toggleNewKemampuanModal} >Tambah Kemampuan</ModalHeader>
                         <ModalBody>

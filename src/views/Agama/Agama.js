@@ -199,7 +199,7 @@ class Agama extends Component {
 	              <CardBody>
 
 				{/* Modal (pop up) add Agama */}
-				  <Button color="danger" onClick={this.toggleNewAgamaModal}>Tambah Agama</Button>
+				  <Button outline color="success" size="md" onClick={this.toggleNewAgamaModal} style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
 					<Modal isOpen={this.state.newAgamaModal} toggle={this.toggleNewAgamaModal}>
 						<ModalHeader toggle={this.toggleNewAgamaModal}>Tambah Agama</ModalHeader>
 						<ModalBody>

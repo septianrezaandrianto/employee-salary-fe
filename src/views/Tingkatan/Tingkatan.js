@@ -201,7 +201,7 @@ class Tingkatan extends Component {
 	              <CardBody>
 	             
 		  		{/* Modal (Pop up) menambahkan tingkatan */}
-				  <Button color="danger" onClick={this.toggleNewTingkatanModal} type="reset">Tambah Tingkatan</Button>
+				  <Button outline color="success" size="md" onClick={this.toggleNewTingkatanModal} type="reset" style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
 					<Modal isOpen={this.state.newTingkatanModal} toggle={this.toggleNewTingkatanModal}>
 						<ModalHeader toggle={this.toggleNewTingkatanModal}>Tambah Tingkatan</ModalHeader>
 						<ModalBody>

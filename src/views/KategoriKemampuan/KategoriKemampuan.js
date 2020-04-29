@@ -201,7 +201,7 @@ import {
 	              <CardBody>
 	              
                 {/* Modal {Pop up} add kategoti kemampuan */}
-                    <Button color="danger" onClick={this.toggleNewKategoriKemampuanModal}>Tambah Kategori Kemampuan</Button>
+                    <Button outline color="success" size="md" onClick={this.toggleNewKategoriKemampuanModal} style={{"margin" : "10px 0px"}}><i className="fa fa-plus"></i> Tambah</Button>
                     <Modal isOpen={this.state.newKategoriKemampuanModal} toggle={this.toggleNewKategoriKemampuanModal}>
                         <ModalHeader toggle={this.toggleNewKategoriKemampuanModal}>Tambah Kategori Kemampuan</ModalHeader>
                         <ModalBody>
