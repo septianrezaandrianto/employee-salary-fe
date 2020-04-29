@@ -122,7 +122,7 @@ class Parameter extends Component {
                       <Table hover bordered striped responsive size="sm">
                           <thead>
                           <tr>
-                            <th>ID Parameter</th>
+                            <th className="nomor">No</th>
                             <th>TB Parameter</th>
                             <th>Lembur</th>
                             <th>Bonus Pg</th>
@@ -145,9 +145,9 @@ class Parameter extends Component {
                             <tr>
                                 <td colSpan = "12"><h4>Belum ada data</h4></td>
                             </tr> :
-                            currentParameter.map((param) => (         
+                            currentParameter.map((param, index) => (         
                             <tr key= {param.idParam}>
-                                <td>{param.idParam}</td>
+                                <td>{index +1}</td>
                                 <td>{param.tbParameter}</td>
                                 <td>{param.lembur}</td>
                                 <td>Rp. {param.bonusPg}</td>

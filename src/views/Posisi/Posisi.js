@@ -264,7 +264,7 @@ class Posisi extends Component {
 	                <Table hover bordered striped responsive size="sm">
 	                  <thead>
 	                  <tr>
-	                    <th>ID Posisi</th>
+	                    <th className="nomor">No</th>
 	                    <th>Nama Posisi</th>
 	                    <th className ="aksi">Aksi</th>
 	                  </tr>
@@ -279,9 +279,9 @@ class Posisi extends Component {
 							<td colSpan = "12"><h4>Belum ada data</h4></td>
 						</tr>:
 						
-						currentPosisi.map((pos) => (         
+						currentPosisi.map((pos, index) => (         
 	                    <tr key= {pos.idPosisi}>
-	                      <td>{pos.idPosisi}</td>
+	                      <td>{index +1}</td>
 	                      <td>{pos.namaPosisi}</td>		       
 		       			  <td>
 		       			  	<Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, pos.idPosisi, pos.namaPosisi)} className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>

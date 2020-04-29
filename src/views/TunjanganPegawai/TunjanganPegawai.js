@@ -123,7 +123,7 @@ import {
                       <Table hover bordered striped responsive size="sm">
                           <thead>
                           <tr>
-                            <th>ID Tunjangan Pegawai</th>
+                            <th className="nomor">No</th>
                             <th>Posisi</th>
                             <th>Tingkatan</th>
                             <th>Besaran Tunjangan</th>
@@ -137,11 +137,11 @@ import {
                           <tr>
                               <td colSpan = "12"><h4>Belum ada data</h4></td>
                           </tr> :
-                          currentTunjanganPegawai.map((tp) => (         
+                          currentTunjanganPegawai.map((tp, index) => (         
                             <tr  key= {tp.idTunjanganPegawai}>
-                                <td>{tp.idTunjanganPegawai}</td>
-                                <td>{tp.posisi.idPosisi}</td>
-                                <td>{tp.tingkatan.idTingkatan}</td>
+                                <td>{index +1}</td>
+                                <td>{tp.posisi.namaPosisi}</td>
+                                <td>{tp.tingkatan.namaTingkatan}</td>
                                 <td>{tp.besaranTujnaganPegawai}</td>                     
                                 <td>
                                 <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>                           

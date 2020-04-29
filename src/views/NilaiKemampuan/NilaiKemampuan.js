@@ -117,7 +117,7 @@ import {
                       <Table hover bordered striped responsive size="sm">
                           <thead>
                           <tr>
-                            <th>ID Nilai Kemampuan</th>
+                            <th className="nomor">No</th>
                             <th>Nama Karyawan</th>
                             <th>Kemampuan</th>                         
                             <th>Nilai Kemampuan</th>
@@ -131,10 +131,10 @@ import {
                           <tr>
                             <td colSpan = "12"><h4>Belum ada data</h4></td>
                           </tr> :
-                            currentNilaiKemampuan.map((nk) => (
+                            currentNilaiKemampuan.map((nk, index) => (
 
                             <tr key= {nk.idListKemampuan}>
-                                <td>{nk.idListKemampuan}</td>                              
+                                <td>{index +1}</td>                              
                                 <td>{nk.karyawan.nama}</td>
                                 <td>{nk.kemampuan.namaKemampuan}</td>
                                 <td>{nk.nilaiKemampuan}</td>

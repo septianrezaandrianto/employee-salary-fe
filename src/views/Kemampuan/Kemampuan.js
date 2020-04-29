@@ -195,7 +195,7 @@ import {
                        {/* Modal (pop up) untuk add kemampuan */}
                       <Button color="danger" onClick={this.toggleNewKemampuanModal}>Tambah Kemampuan</Button>
                       <Modal isOpen={this.state.newKemampuanModal} toggle={this.toggleNewKemampuanModal}>
-                        <ModalHeader toggle={this.toggleNewKemampuanModal}>Tambah Kemampuan</ModalHeader>
+                        <ModalHeader toggle={this.toggleNewKemampuanModal} >Tambah Kemampuan</ModalHeader>
                         <ModalBody>
 
                         <Form method ="POST" onSubmit={this.onSubmit} action=""  className="form-horizontal">
@@ -247,7 +247,7 @@ import {
                       <Table hover bordered striped responsive size="sm">
                           <thead>
                           <tr>
-                            <th>ID Kemampuan</th>
+                            <th className="nomor">No</th>
                             <th>Nama Kategori</th>
                             <th>Nama Kemampuan</th>
                             <th className ="aksi">Aksi</th>
@@ -259,9 +259,9 @@ import {
                           <tr>
                               <td colSpan = "12"><h4>Belum ada data</h4></td>
                           </tr> :
-                          currentKemampuan.map((kem) => (         
+                          currentKemampuan.map((kem, index) => (         
                             <tr key= {kem.idKemampuan}>
-                                 <td>{kem.idKemampuan}</td>
+                                 <td>{index +1}</td>
                                  <td>{kem.kategoriKemampuan.namaKategori}</td>
                                  <td>{kem.namaKemampuan}</td>
                                  <td>

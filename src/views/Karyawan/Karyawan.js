@@ -33,7 +33,8 @@ class Karyawan extends Component {
 		this.state = {
 			employees : [],
 			currentPage : 1,
-			employeesPerPage : 5,			
+			employeesPerPage : 5,
+			no : 1			
 		}
 	}
 	
@@ -102,9 +103,17 @@ class Karyawan extends Component {
 	this.getEmployee();
 	}
 
-	render () {
-			const {employees, currentPage, employeesPerPage}=this.state;
+	/* getNumber() {
+		let text= "";
+		let number;
+		for (number = 1 ; number <= this.state.employees.length ; number ++) {
+			text += number;	
+		}
+		return text;
+	} */
 
+	render () {
+			const {employees, currentPage, employeesPerPage}=this.state;			
 			const lastIndex = currentPage * employeesPerPage;
 			const firstIndex = lastIndex - employeesPerPage;
 			const currentEmployees = employees.slice(firstIndex, lastIndex);
@@ -123,7 +132,7 @@ class Karyawan extends Component {
 						<Table hover bordered striped responsive size="sm">
 						<thead>
 						<tr>
-							<th>ID Karyawan</th>
+							<th className="nomor">No.</th>
 							<th>No. KTP</th>
 							<th>Nama Karyawan</th>	                    
 							<th>Posisi</th>
@@ -151,10 +160,10 @@ class Karyawan extends Component {
 							<td colSpan = "12"><h4>Belum ada data</h4></td>
 						</tr> :
 
-						currentEmployees.map((emp) => (
+						currentEmployees.map((emp, index) => (
 
 							<tr key= {emp.idKaryawan}>
-							<td>{emp.idKaryawan}</td>
+							<td>{index+1}</td>
 							<td>{emp.noKtp}</td>
 							<td>{emp.nama}</td>						  
 							<td>{emp.posisi.namaPosisi}</td>
@@ -178,8 +187,7 @@ class Karyawan extends Component {
 							</td>
 							</tr>
 						))}
-						</tbody>
-						
+						</tbody>						
 						</Table>
 
 					</CardBody>

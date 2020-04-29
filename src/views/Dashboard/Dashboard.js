@@ -2,30 +2,14 @@ import React, { Component } from 'react';
 import './../../assets/style.css';
 import axios from 'axios';
 import {
-	Pagination,
-	PaginationItem,
-	PaginationLink,
-	Badge,
-/* 	Label,
-	Modal,
-	ModalHeader,
-	ModalBody,
-	ModalFooter,
-	Form,
-	FormGroup,
-	Input,
-	InputGroup,
-	InputGroupAddon,
-	InputGroupText, */
-	Button,
 	Card,
 	CardBody,
 	CardHeader,
-	Col,
 	Row,
-	Table,
-	CardFooter
 } from 'reactstrap';
+import { Pie, Line } from 'react-chartjs-2';
+
+
 
 class Dashboard extends Component {
   constructor(props) {
@@ -38,9 +22,8 @@ class Dashboard extends Component {
     this.state = {
       dropdownOpen: false,
       radioSelected: 2,
-      employees : [],
-      currentPage : 1,
-			employeesPerPage : 5,
+      employees : {},
+      pendapatan : {}
     };
   }
 
@@ -56,152 +39,165 @@ class Dashboard extends Component {
     });
   }
 
-/*paginasi */
-currentPage = (e) => {
-  this.setState ({
-    [e.target.name] : parseInt(e.target.value)
-  });
-};
+  getEmployee() {
+    axios.get('http://localhost:8085/api/karyawan/all')
+    .then(res => {
+      console.log(res);
 
-firstPage = () => {
-  if (this.state.currentPage > 1 ) {
-    this.setState ({
-      currentPage : 1
-    });
+      const pieChart = res.data.Data;
+      let name=[];
+      let masakerja=[];
+      pieChart.forEach(record => {
+        name.push(record.nama);
+      // console.log(name)
+        masakerja.push(record.masaKerja);
+        //console.log(masakerja)
+      });
+      this.setState ({
+        employees : {
+          labels : name, 
+          datasets : [
+            {
+              label : 'Data Keryawan',
+              data : masakerja,
+              backgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#66E900',
+                '#E94300',
+                '#0ED3AC',
+                '#025141',
+                '#3B120A',
+                '#2F1D19',
+                '#0F1DCA',
+                '#FD22DC',
+                '#0DA9CB',
+                '#2ACB0D',
+                '#A9EE0A',
+                '#FB2605',
+                '#602BAD',
+                '#BC07A6',
+                '#C7043F',
+                '#B57488',
+                '#3C6861',
+                '#E477E2',
+                '#616D8C',
+                '#532E36',
+                '#6C0BAC',
+              ],
+              hoverBackgroundColor: [
+                '#FF6384',
+                '#36A2EB',
+                '#FFCE56',
+                '#66E900',
+                '#E94300',
+                '#0ED3AC',
+                '#025141',
+                '#3B120A',
+                '#2F1D19',
+                '#0F1DCA',
+                '#FD22DC',
+                '#0DA9CB',
+                '#2ACB0D',
+                '#A9EE0A',
+                '#FB2605',
+                '#602BAD',
+                '#BC07A6',
+                '#C7043F',
+                '#B57488',
+                '#3C6861',
+                '#E477E2',
+                '#616D8C',
+                '#532E36',
+                '#6C0BAC',
+              ],
+            }
+          ]
+        }
+      })
+    })
   }
-};
 
-prevPage = () => {
-  if (this.state.currentPage > 1) {
-    this.setState ({
-      currentPage :  this.state.currentPage - 1
-    });
+  getPendapatan() {
+    axios.get('http://localhost:8085/api/pendapatan/all')
+    .then(res => {
+      console.log(res);
+      const line = res.data.Data;
+      let name = [];
+      let thp = [];
+      line.forEach (record => {
+        name.push(record.karyawanDto.nama);
+        thp.push(record.takeHomePay);
+      });
+
+      this.setState({
+        pendapatan : {
+          labels : name,
+          datasets : [
+            {
+              label : 'Data Pendapatan Karyawan',
+              data : thp,
+              fill: false,
+              lineTension: 0.1,
+              backgroundColor: 'rgba(75,192,192,0.4)',
+              borderColor: 'rgba(75,192,192,1)',
+              borderCapStyle: 'butt',
+              borderDash: [],
+              borderDashOffset: 0.0,
+              borderJoinStyle: 'miter',
+              pointBorderColor: 'rgba(75,192,192,1)',
+              pointBackgroundColor: '#fff',
+              pointBorderWidth: 1,
+              pointHoverRadius: 5,
+              pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+              pointHoverBorderColor: 'rgba(220,220,220,1)',
+              pointHoverBorderWidth: 2,
+              pointRadius: 1,
+              pointHitRadius: 10,
+            }
+          ]
+        }
+      })
+    })
   }
-};
 
-nextPage = () => {
-  if (this.state.currentPage < Math.ceil(this.state.employees.length / this.state.employeesPerPage)) {
-    this.setState ({
-      currentPage : this.state.currentPage + 1
-    });
+  componentDidMount() {
+    this.getEmployee();
+    this.getPendapatan();
   }
-};
-
-lastPage = () => {
-  if (this.state.currentPage < Math.ceil(this.state.employees.length / this.state.employeesPerPage)) {
-    this.setState ({
-      currentPage : Math.ceil(this.state.employees.length / this.state.employeesPerPage)
-    });
-  }
-};
-
-getEmployee() {
-  fetch('http://localhost:8085/api/karyawan/all', {
-    method:'GET'
-  }).then(res => res.json()).then((data) =>{
-    console.log(data.Data)
-    this.setState({employees: data.Data})
-  })
-  .catch(console.log)
-}
-
-componentDidMount() {
-this.getEmployee();
-}
 
 render () {
-    const {employees, currentPage, employeesPerPage}=this.state;
 
-    const lastIndex = currentPage * employeesPerPage;
-    const firstIndex = lastIndex - employeesPerPage;
-    const currentEmployees = employees.slice(firstIndex, lastIndex);
-    const totalPages = Math.ceil(employees.length / employeesPerPage);
   return (
 
-  <>
-  <Row>
-    <Col>
-      <Card>
-      <CardHeader>
-        <i className="fa fa-users"></i>Dashboard
-        </CardHeader>
-        <CardBody>
-
-          <Table hover bordered striped responsive size="sm">
-          <thead>
-          <tr>
-            <th>ID Karyawan</th>
-            <th>No. KTP</th>
-            <th>Nama Karyawan</th>	                    
-            <th>Posisi</th>
-            <th>Tingkatan</th>	                   
-            <th>Agama</th>	                    
-            <th>Alamat</th>
-            <th>Tanggal Lahir</th>
-            <th>Kontrak Awal</th>
-            <th>Kontrak Akhir</th>
-            <th>Masa Kerja</th>
-            <th>Kota Penempatan</th>
-            <th>UMK Penempatan</th>
-            <th>Status Pernikahan</th>
-            <th>Jenis Kelamin</th>
-            <th>Jumlah anak</th>
-          </tr>
-          </thead>
-
-          {currentEmployees.map((emp) => (
-
-          <tbody key= {emp.idKaryawan}>          
-            <tr>
-            <td>{emp.idKaryawan}</td>
-            <td>{emp.noKtp}</td>
-            <td>{emp.nama}</td>						  
-            <td>{emp.posisi.namaPosisi}</td>
-            <td>{emp.tingkatan.namaTingkatan}</td>   
-            <td>{emp.agama.namaAgama}</td>					  	  
-            <td>{emp.alamat}</td>
-            <td>{emp.tanggalLahir}</td>
-            <td>{emp.kontrakAwal}</td>
-            <td>{emp.kontrakAkhir}</td>	
-            <td>{emp.masaKerja}</td>
-            <td>{emp.penempatan.kotaPenempatan}</td>
-            <td>Rp. {emp.penempatan.umkPenempatan}</td>
-            <td>{emp.statusPernikahan}</td>						  
-            <td>
-              <Badge color="success">{emp.jenisKelamin}</Badge>
-            </td>
-            <td>{emp.jumlahAnak}</td>
-            </tr>
-
-          </tbody>
-          ))}
-          </Table>
-
-        </CardBody>
-        <CardFooter>
-                <div style={{"float" : "left"}}>
-                  Halaman {currentPage} dari {totalPages}
+    <>
+      <Row>
+        
+        <Card style={{"height" :"80%", "width" : "80%" , "margin" : "0px 120px"}}>
+            <CardHeader className="bg-dark" style={{"textAlign" : "center"}}>
+              <h4 style={{"fontFamily" : "Lucida Console"}}>DATA MASA KERJA KARYAWAN (DALAM TAHUN)</h4>
+            </CardHeader>
+            <CardBody>
+              <div>
+                <Pie data={this.state.employees}/>
               </div>
+            </CardBody>
+          </Card>
 
-              <nav>
-                  <Pagination className= "paginasi">
-                  <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.firstPage}>First</PaginationLink></PaginationItem>
-                    <PaginationItem><PaginationLink previous tag="button" disabled={currentPage === 1 ? true : false} onClick={this.prevPage}>Prev</PaginationLink></PaginationItem>
-
-                    <PaginationItem active>
-                      <PaginationLink tag="button" name="currentPage" value={currentPage} onChange = {this.changePage}>{currentPage}</PaginationLink>
-                    </PaginationItem>
-
-                    <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.nextPage}>Next</PaginationLink></PaginationItem>
-                    <PaginationItem ><PaginationLink next tag="button" disabled={currentPage === totalPages ? true : false} onClick={this.lastPage}>Last</PaginationLink></PaginationItem>
-                  </Pagination>
-                </nav>
-
-              </CardFooter>
-        </Card>
-      </Col>
+          <Card style={{"height" :"80%", "width" : "80%" , "margin" : "20px 120px"}} >
+            <CardHeader className="bg-dark" style={{"textAlign" : "center"}}>
+              <h3 style={{"fontFamily" : "Lucida Console"}}>DATA PENDAPATAN KARYAWAN</h3>
+            </CardHeader>
+            <CardBody>
+              <div className="chart-wrapper">
+                <Line data={this.state.pendapatan}/>
+              </div>
+            </CardBody>
+          </Card>        
       </Row>
     </>
+   
     );
   }
 

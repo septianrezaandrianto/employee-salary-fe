@@ -308,7 +308,7 @@ class Penempatan extends Component {
 	                <Table hover bordered striped responsive size="sm">
 	                  <thead>
 	                  <tr>
-	                    <th>ID Penempatan</th>
+	                    <th className="nomor">No</th>
 	                    <th>Kota Penempatan</th>
 	                    <th>UMK Penempatan</th>
 	                    <th className ="aksi">Aksi</th>
@@ -321,10 +321,10 @@ class Penempatan extends Component {
 					<tr>
 						<td colSpan = "12"><h4>Belum ada data</h4></td>
 					</tr> :
-					currentPenempatan.map((pen) => (         
+					currentPenempatan.map((pen, index) => (         
 	                    <tr key= {pen.idPenempatan}>
 						
-	                      <td>{pen.idPenempatan}</td>
+	                      <td>{index+1}</td>
 	                      <td>{pen.kotaPenempatan}</td>
 		       			  <td>Rp. {pen.umkPenempatan}</td>				
 		       			  <td>

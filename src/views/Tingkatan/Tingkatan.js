@@ -262,7 +262,7 @@ class Tingkatan extends Component {
 	                <Table hover bordered striped responsive size="sm">
 	                  <thead>
 	                  <tr>
-	                    <th>ID Tingkatan</th>
+	                    <th className="nomor">No</th>
 	                    <th>Nama Tingkatan</th>
 	                    <th className="aksi">Aksi</th>
 	                  </tr>
@@ -274,9 +274,9 @@ class Tingkatan extends Component {
 					<tr>
 						<td colSpan = "12"><h4>Belum ada data</h4></td>
 					</tr> :
-					currentTingkatan.map((ting) => (         
+					currentTingkatan.map((ting, index) => (         
 	                    <tr key= {ting.idTingkatan}>
-	                      <td>{ting.idTingkatan}</td>
+	                      <td>{index +1}</td>
 	                      <td>{ting.namaTingkatan}</td>		       
 		       			  <td>
 		       			  	<Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, ting.idTingkatan, ting.namaTingkatan)} className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>

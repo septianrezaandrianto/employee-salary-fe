@@ -30,9 +30,6 @@ class Agama extends Component {
 		super();
 			this.state = {
 				agama : [],
-				addAgama : {
-					namaAgama: ''
-				},
 				editAgama : {
 					idAgama : '',
 					namaAgama : ''
@@ -59,11 +56,11 @@ class Agama extends Component {
 		e.preventDefault();
 		alert('Posisi berhasil ditambahkan');
 
-		const {addAgama} = {
-			namaAgama : this.state.name
+		const agama = {
+			namaAgama : this.state.nama
 		}
 
-		axios.post('http://localhost:8085/api/agama/add', addAgama)
+		axios.post('http://localhost:8085/api/agama/add', agama)
 		.then((res) =>  {
 			console.log(res.data)
 			this.setState({newAgamaModal : false})
@@ -266,7 +263,7 @@ class Agama extends Component {
 	                <Table hover bordered striped responsive size="sm">
 	                  <thead>
 	                  <tr>
-	                    <th>Id Agama</th>
+	                    <th className="nomor">No</th>
 	                    <th>Nama Agama</th>
 	                    <th className="aksi">Aksi</th>
 	                  </tr>
@@ -279,9 +276,9 @@ class Agama extends Component {
 						<td colSpan = "12"><h4>Belum ada data</h4></td>
 					</tr> :
 
-					currentAgama.map((agama) => (
+					currentAgama.map((agama, index) => (
 					  <tr key= {agama.idAgama}>
-						<td>{agama.idAgama}</td>
+						<td>{index+1}</td>
 						<td>{agama.namaAgama}</td>		       
 						<td>
 							<Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, agama.idAgama, agama.namaAgama)} className ="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>

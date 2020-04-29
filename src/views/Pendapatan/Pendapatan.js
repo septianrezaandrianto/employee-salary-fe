@@ -36,7 +36,7 @@ import {
       }
 
       getPendapatan () {
-          axios.get('http://localhost:8085/api/pendapatan/reno/all')
+          axios.get('http://localhost:8085/api/pendapatan/all')
           .then(res => {
               this.setState ({pendapatan : res.data.Data})
           })
@@ -110,7 +110,8 @@ import {
                   <Table hover bordered striped responsive size="sm">
 	                  <thead>
 	                  <tr>
-	                      <th>ID Pendapatan</th>
+	                      <th className="nomor">No</th>
+                        <th>Nama</th>
                         <th>Tanggal Gaji</th>
                         <th>Tunj. Keluarga</th>
                         <th>Tunj. Transport</th>
@@ -128,11 +129,12 @@ import {
 	                  </tr>
 	                  </thead>
 
-	                  {currentPendapatan.map((pen) => ( 
+	                  {currentPendapatan.map((pen, index) => ( 
 
 	                  <tbody key= {pen.idPendapatan}>          
 	                    <tr>
-                            <td>{pen.idPendapatan}</td>
+                            <td>{index +1}</td>
+                            <td>{pen.karyawanDto.nama}</td>
                             <td>{pen.tanggalGaji}</td>
                             <td>Rp. {pen.gajiPokok}</td>
                             <td>Rp. {pen.tunjanganKeluarga}</td>
