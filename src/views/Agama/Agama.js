@@ -62,7 +62,7 @@ class Agama extends Component {
 
 		axios.post('http://localhost:8085/api/agama/add', agama)
 		.then((res) =>  {
-			console.log(res.data)
+			console.log(res)
 			this.setState({newAgamaModal : false})
 			this.getAgama();
 		})

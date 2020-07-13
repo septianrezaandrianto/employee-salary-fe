@@ -157,7 +157,7 @@ class Karyawan extends Component {
 						{employees.length === 0 ?
 
 						<tr>
-							<td colSpan = "12"><h4>Belum ada data</h4></td>
+							<td colSpan = "100%"><h4>Belum ada data</h4></td>
 						</tr> :
 
 						currentEmployees.map((emp, index) => (

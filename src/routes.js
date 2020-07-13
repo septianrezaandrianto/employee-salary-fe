@@ -15,6 +15,8 @@ const TunjanganPegawai = React.lazy (() => import('./views/TunjanganPegawai'));
 const Parameter = React.lazy (() => import ('./views/Parameter'));
 const PresentaseGaji = React.lazy(() => import ('./views/PresentaseGaji'));
 
+const Dispatch = React.lazy(() => import ('./views/Dispatch'));
+
 const Breadcrumbs = React.lazy(() => import('./views/Base/Breadcrumbs'));
 const Cards = React.lazy(() => import('./views/Base/Cards'));
 const Carousels = React.lazy(() => import('./views/Base/Carousels'));
@@ -133,6 +135,9 @@ const routes = [
 
   { path: '/presentase-gaji', exact: true, name: 'Presentase Gaji', component : PresentaseGaji},
   { path: '/presentase-gaji/list-presentase-gaji', name : 'List Presentase Gaji', component : PresentaseGaji},
+
+  { path: '/dispatch', exact: true, name: 'Dispatch', component : Dispatch},
+  { path: '/dispatch/list-dispatch', name : 'List Dispatch', component : Dispatch},
 ];
 
 export default routes;

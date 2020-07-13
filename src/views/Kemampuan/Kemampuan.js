@@ -32,66 +32,94 @@ import {
           this.state = {
               kemampuan : [],
               kategoriKemampuan : [],
+              editKemampuan : {
+                idKemampuan : '',
+                namaKemampuan :'',
+                kategoriKemampuan : {
+                    idKategori : '',
+                }
+              },
               newKemampuanModal : false,
               editKemampuanModal : false,
               currentPage : 1,
               kemampuanPerPage: 5,
-                
-              addKemampuan : {
-                namaKemampuan : '',
-                  kategoriKemampuan : {
-                    namaKategori : ''
-                  }
-                }
           }
-          /* this.onChange = this.onChange.bind(this);
-          this.onSubmit = this.onSubmit.bind(this); */
+          this.onChange = this.onChange.bind(this);
+          /* this.onSubmit = this.onSubmit.bind(this); */
           this.toggleNewKemampuanModal = this.toggleNewKemampuanModal.bind(this);
-       /*  this.toggleEditKemampuanModal = this.toggleEditKemampuanModal.bind(this); */
+          this.toggleEditKemampuanModal = this.toggleEditKemampuanModal.bind(this);
       }
 
-     /*  onChange = (e) => {
+      onChange = (e) => {
         this.setState ({
           [e.target.name] : e.target.value
         })
       }
 
-      onSubmit = (e) => {
+       onSubmit = (e) => {
         e.preventDefault();
         alert('Kemampuan berhasil ditambah')
-        const kemampuan = {
-          idKategori : this.state.namaKtg,  
-          namaKemampuan : this.state.nama
+        const kmp = {  
+          namaKemampuan : this.state.nama,
+          kategoriKemampuan : {           
+            idKategori : this.state.namaKtg
+          } 
         }
 
-        axios.post('http://localhost:8085/api/kemampuan/add', kemampuan)
+        axios.post('http://localhost:8085/api/kemampuan/add', kmp)
         .then ((res) => {
           console.log(res.data)
-          this.setState ({ newKemampuanModal : false })
+          this.setState ({newKemampuanModal : false })
           this.getKemampuan();
 
         })
         .catch((error) => {
           console.log(error)
         });
-      } */
+      }
 
-      addNewKemampuan () {
-        axios.post('http://localhost:8085/api/kemampuan/add', this.state.addKemampuan)
+      onEdit (idKemampuan, namaKemampuan, idKategori) {
+        console.log(namaKemampuan)
+
+        this.setState ({
+          editKemampuan : {
+            idKemampuan,
+            namaKemampuan,
+            kategoriKemampuan : {
+              idKategori
+            }          
+          },
+          editKemampuanModal : ! this.state.editKemampuanModal
+        });
+      }
+
+      updateKemampuan () {
+        alert('Data berhasil diubah')
+        let {namaKemampuan, idKategori} = this.state.editKemampuan;
+
+        axios.put('http://localhost:8085/api/kemampuan/update/' +  this.state.editKemampuan.idKemampuan, {
+          namaKemampuan, kategoriKemampuan : {
+            idKategori
+          }
+        })
         .then((res) => {
-          let {kemampuan} = this.state;
+          console.log(res.data)
+          this.getKemampuan();
 
-          kemampuan.push(res.data)
-          this.setState ({newKemampuanModal : false,
-            addKemampuan : {
+          this.setState ({
+            editKemampuanModal : false,
+            editKemampuan : {
+              idKemampuan : '',
               namaKemampuan : '',
-                kategoriKemampuan : {
-                  namaKategori : ''
-                }
+              kategoriKemampuan : {
+                idKategori : ''
+              }
             }
-
           })
         })
+        .catch((error) => {
+          console.log(error)
+        });
       }
 
       onDelete (id) {
@@ -134,7 +162,13 @@ import {
       toggleNewKemampuanModal = () => {
         this.setState ({
           newKemampuanModal : ! this.state.newKemampuanModal
-        })
+        });
+      }
+
+      toggleEditKemampuanModal = () => {
+        this.setState({
+          editKemampuanModal : ! this.state.editKemampuanModal
+        });
       }
 
       currentPage = (e) => {
@@ -201,16 +235,10 @@ import {
                         <Form method ="POST" onSubmit={this.onSubmit} action=""  className="form-horizontal">
                         <FormGroup row>
                         <Col md="12">                      
-                          <Label for="namaKategori">Nama Kategori</Label>
-                          <Input type="select" name="namaKtg" id="namaKtg" value={this.state.addKemampuan.kategoriKemampuan.namaKategori} onChange={(e) => {
-                            let {addKemampuan} = this.state;
-
-                            addKemampuan.kategoriKemampuan.namaKategori = e.target.value;
-
-                            this.setState ({ addKemampuan })
-                          }}> 
+                          <Label for="namaKategori">ID Kategori</Label>
+                          <Input type="select" name="namaKtg" id="namaKtg" onChange={this.onChange}> 
                           {kategoriKemampuan.map ((km) => (
-                            <option key = {km.idKategori}>{km.namaKategori}</option>
+                            <option key = {km.idKategori}>{km.idKategori}</option>
                             ))}
                            
                           </Input>
@@ -225,13 +253,7 @@ import {
                               <i className="fa fa-pencil-square"></i>
                             </InputGroupText>
                             </InputGroupAddon>
-                            <Input type="text" name="nama" placeholder="Masukan nama kemampuan" value={this.state.addKemampuan.namaKemampuan} onChange = {(e) => {
-                              let {addKemampuan} = this.state;
-
-                              addKemampuan.namaKemampuan = e.target.value;
-
-                              this.setState({addKemampuan})
-                            }} required />
+                            <Input type="text" name="nama" placeholder="Masukan nama kemampuan"  onChange = {this.onChange} required />
                           </InputGroup>
                           </Col>
                         </FormGroup>
@@ -239,8 +261,53 @@ import {
 
                         </ModalBody>
                         <ModalFooter>
-                          <Button color="primary" onClick={this.addNewKemampuan.bind(this)}>Simpan</Button>{' '}
+                          <Button color="primary" onClick={this.onSubmit}>Simpan</Button>{' '}
                           <Button color="secondary" onClick={this.toggleNewKemampuanModal}>Cancel</Button>
+                        </ModalFooter>
+                      </Modal>
+
+
+                      {/* Modal (pup up) untuk edit */}
+                      <Modal isOpen={this.state.editKemampuanModal} toggle={this.toggleEditKemampuanModal}>
+                        <ModalHeader toggle={this.toggleEditKemampuanModal} >Ubah Data Kemampuan</ModalHeader>
+                        <ModalBody>
+
+                        <Form method ="" onSubmit={this.onSubmit} action=""  className="form-horizontal">
+                        <FormGroup row>
+                        <Col md="12">                      
+                          <Label for="namaKategori">ID Kategori</Label>
+                          <Input type="select" name="namaKtg" id="namaKtg" onChange={this.onChange}> 
+                          {kategoriKemampuan.map ((km) => (
+                            <option key = {km.idKategori}>{km.idKategori}</option>
+                            ))}
+                           
+                          </Input>
+                        </Col>
+                        </FormGroup>
+                       
+                        <FormGroup row>
+                          <Col md="12">
+                          <InputGroup>
+                            <InputGroupAddon addonType="prepend">
+                            <InputGroupText>
+                              <i className="fa fa-pencil-square"></i>
+                            </InputGroupText>
+                            </InputGroupAddon>
+                            <Input type="text" name="nama" placeholder="Masukan nama kemampuan" value={this.state.editKemampuan.namaKemampuan} onChange = {(e)=> {
+                              let {editKemampuan} = this.state
+                              editKemampuan.namaKemampuan = e.target.value;
+
+                              this.setState ({editKemampuan})
+                            }} />
+                          </InputGroup>
+                          </Col>
+                        </FormGroup>
+                      </Form>	
+
+                        </ModalBody>
+                        <ModalFooter>
+                          <Button color="primary" onClick={this.updateKemampuan.bind(this)}>Update</Button>{' '}
+                          <Button color="secondary" onClick={this.toggleEditKemampuanModal}>Cancel</Button>
                         </ModalFooter>
                       </Modal>
 
@@ -248,7 +315,7 @@ import {
                           <thead>
                           <tr>
                             <th className="nomor">No</th>
-                            <th>Nama Kategori</th>
+                            <th>ID Kategori</th>
                             <th>Nama Kemampuan</th>
                             <th className ="aksi">Aksi</th>
                           </tr>
@@ -262,10 +329,10 @@ import {
                           currentKemampuan.map((kem, index) => (         
                             <tr key= {kem.idKemampuan}>
                                  <td>{index +1}</td>
-                                 <td>{kem.kategoriKemampuan.namaKategori}</td>
+                                 <td>{kem.kategoriKemampuan.idKategori}</td>
                                  <td>{kem.namaKemampuan}</td>
                                  <td>
-                                <Button type="submit" size="sm" color="warning" /* onClick={this.onEdit.bind(this, pen.idPendapatan)} */ className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>                                    
+                                <Button type="submit" size="sm" color="warning" onClick={this.onEdit.bind(this, kem.idKemampuan, kem.namaKemampuan, kem.kategoriKemampuan.idKategori)} className="mr-2"><i className="fa fa-pencil" name="edit"></i></Button>                                    
                                 <Button type="reset" size="sm" color="danger" onClick={this.onDelete.bind(this, kem.idKemampuan)}><i className="fa fa-trash"></i></Button>
                                  </td>
                             </tr>

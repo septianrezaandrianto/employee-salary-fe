@@ -38,11 +38,14 @@ import NilaiKemampuan from './NilaiKemampuan';
 import TunjanganPegawai from './TunjanganPegawai';
 import Parameter from './Parameter';
 import PresentaseGaji from './PresentaseGaji';
+import Dispatch from './Disptach';
 
 
 import Widgets from './Widgets';
 
 export {
+  Dispatch,
+
   Karyawan,
   Penempatan,
   Agama,

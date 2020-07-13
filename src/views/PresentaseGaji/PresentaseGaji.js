@@ -137,7 +137,7 @@ import {
                           <tbody>  
                             {presentaseGaji.length === 0 ?
                             <tr>
-                              <td colSpan="12">data masih kosong</td>
+                              <td colSpan = "100%"><h4>Belum ada data</h4></td>
                             </tr> : 
 
                             currentPresentasiGaji.map((pg, index) => (        
